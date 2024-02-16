@@ -30,7 +30,7 @@ def Make_music_time_stamps(input):
     onset_env = librosa.onset.onset_strength(y=y, sr=sr,
                                             hop_length=512,
                                             aggregate=np.median)
-    peaks = librosa.util.peak_pick(onset_env, pre_max=20, post_max=20, pre_avg=200, post_avg=200, delta=0.7, wait=10)  # Adjust parameters for less sensitivity
+    peaks = librosa.util.peak_pick(onset_env, pre_max=20, post_max=20, pre_avg=200, post_avg=200, delta=5, wait=10)  # Adjust parameters for less sensitivity
 
     # Print number of timestamps detected
     num_timestamps = len(peaks)
@@ -57,3 +57,4 @@ def Make_music_time_stamps(input):
 # Example usage:
 input_audio_file = 'Util\Music\Everywhere I Go - (Police Guy Elevator Dancing Edit).mp3'
 Make_music_time_stamps(input_audio_file)
+
