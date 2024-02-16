@@ -6,13 +6,36 @@ import librosa
 import numpy as np
 import datetime
 import csv
-
 import librosa
 import numpy as np
 import datetime
 import os
 import csv
 from moviepy.editor import VideoFileClip, vfx
+import cv2
+
+
+def add_camera_shake_to_clip(clip, shake_intensity=10):
+    """Apply camera shake effect to a video clip."""
+    frame_width, frame_height = clip.size
+    frame_count = int(clip.duration * clip.fps)
+
+    shake_intensity = max(1, min(shake_intensity, 20))  # Limit shake intensity between 1 and 20
+
+    frames_with_shake = []
+    for _ in range(frame_count):
+        frame = clip.get_frame(_ / clip.fps)
+
+        # Randomly shift the frame
+        dx = random.randint(-shake_intensity, shake_intensity)
+        dy = random.randint(-shake_intensity, shake_intensity)
+        translation_matrix = np.float32([[1, 0, dx], [0, 1, dy]])
+        shifted_frame = cv2.warpAffine(frame, translation_matrix, (frame_width, frame_height))
+
+        frames_with_shake.append(shifted_frame)
+
+    return [clip.set_audio(None).set_make_frame(lambda t: frames_with_shake[min(int(t * clip.fps), len(frames_with_shake) - 1)])]
+
 
 
 
@@ -40,7 +63,7 @@ def Make_music_time_stamps(input):
     onset_env = librosa.onset.onset_strength(y=y, sr=sr,
                                             hop_length=512,
                                             aggregate=np.median)
-    peaks = librosa.util.peak_pick(onset_env, pre_max=20, post_max=20, pre_avg=200, post_avg=200, delta=0.7, wait=10)  # Adjust parameters for less sensitivity
+    peaks = librosa.util.peak_pick(onset_env, pre_max=20, post_max=20, pre_avg=200, post_avg=200, delta=5, wait=10)  # Adjust parameters for less sensitivity
 
     # Print number of timestamps detected
     num_timestamps = len(peaks)
@@ -86,7 +109,7 @@ def select_unique_timestamps(video_path, quota):
 
     return sorted(selected_timestamps)
 
-def synchronize_video_with_music(video_path, audio_path, output_path, video_timestamps_file, music_timestamps_file):
+def synchronize_video_with_music(video_path, audio_path, output_path, video_timestamps_file, music_timestamps_file, shake_percentage=10):
     """Synchronize video with music based on given timestamps."""
     video = VideoFileClip(video_path)
     audio = AudioFileClip(audio_path)
@@ -119,6 +142,11 @@ def synchronize_video_with_music(video_path, audio_path, output_path, video_time
         speed_factor = video_duration / music_duration
         clip = video.subclip(start_video, end_video).fx(vfx.speedx, speed_factor)
         clip = clip.set_start(start_music)
+        
+        # Add camera shake effect to clip if within the specified percentage
+        if random.randint(1, 100) <= shake_percentage:
+            clip = concatenate_videoclips(add_camera_shake_to_clip(clip))
+        
         clips.append(clip)
     
     final_clip = concatenate_videoclips(clips)
@@ -127,9 +155,9 @@ def synchronize_video_with_music(video_path, audio_path, output_path, video_time
 
 # Example usage:
 video_path = "Assembly\Download\downloaded_video.mp4"
-audio_path = "Util\Music\Twirlanta - 22gz - Early Drop - Slowed  Reverb [Official TikTok Version].mp3"
+audio_path = "Util\Music\For_my_Pros.mp3"
 video_timestamps_file = "Util\data\Video_time_stamps\Time_stamps.csv"
-music_timestamps_file = "Util\data\Music_time_stamps\Twirlanta - 22gz - Early Drop - Slowed  Reverb [Official TikTok Version].csv"
+music_timestamps_file = "Util\data\Music_time_stamps\For_my_Pros.csv"
 output_path = "video_with_music.mp4"
 
 # Generate and select unique video timestamps
@@ -144,6 +172,5 @@ with open(video_timestamps_file, 'w') as f:
 # Generate music timestamps
 Make_music_time_stamps(audio_path)
 
-# Synchronize video with music
-synchronize_video_with_music(video_path, audio_path, output_path, video_timestamps_file, music_timestamps_file)
-
+# Synchronize video with music and add camera shake to 10% of clips
+synchronize_video_with_music(video_path, audio_path, output_path, video_timestamps_file, music_timestamps_file, shake_percentage=10)
