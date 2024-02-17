@@ -8,7 +8,7 @@ from moviepy.editor import VideoFileClip, concatenate_videoclips
 from moviepy.audio.io.AudioFileClip import AudioFileClip
 from moviepy.editor import vfx
 import cv2
-
+import bisect
 
 def add_camera_shake_to_clip(clip, shake_intensity=10):
     """Apply camera shake effect to a video clip."""
@@ -69,18 +69,31 @@ def make_music_time_stamps(input):
     print("Beat times output to {}. \n Process complete.".format(csv_file))
 
 
-def select_unique_timestamps(video_path, quota, video_duration):
+def select_unique_timestamps(video_path, quota, video_duration, beat_times):
     """Select unique timestamps based on beat intervals."""
     selected_timestamps = set()
 
     try:
-        while len(selected_timestamps) < quota:
-            # Randomly select a beat interval
-            start_beat_idx = random.randint(0, len(beat_times) - 2)
-            end_beat_idx = random.randint(start_beat_idx + 1, min(start_beat_idx + 10, len(beat_times) - 1))
-            start_time = beat_times[start_beat_idx]
-            end_time = beat_times[end_beat_idx]
-            selected_timestamps.add((start_time, end_time))
+        # Divide the video duration into segments to select beat intervals
+        segment_duration = video_duration / quota
+
+        for _ in range(quota):
+            # Select a random segment within the video duration
+            start_segment = random.uniform(0, video_duration - segment_duration)
+            end_segment = start_segment + segment_duration
+
+            # Select a beat interval within the segment
+            start_beat_idx = bisect.bisect_left(beat_times, start_segment)
+            end_beat_idx = bisect.bisect_right(beat_times, end_segment)
+
+            # Check if there are beat intervals within the segment
+            if start_beat_idx < end_beat_idx:
+                start_time = beat_times[start_beat_idx]
+                end_time = beat_times[end_beat_idx - 1]
+
+                # Ensure selected timestamps are within video duration
+                if end_time - start_time <= segment_duration:
+                    selected_timestamps.add((start_time, end_time))
     finally:
         return sorted(selected_timestamps)
 
@@ -109,10 +122,18 @@ def synchronize_video_with_music(video_path, audio_path, output_path, video_time
     for i, ((start_video, end_video), (start_music, end_music)) in enumerate(zip(video_timestamps, music_timestamps)):
         # Calculate duration of video and music segments
         video_duration = end_video - start_video
-
-        # Adjust video playback speed to fit music segment duration
         music_duration = end_music - start_music
+        
+        # Check for zero duration
+        if video_duration == 0 or music_duration == 0:
+            continue
+        
+        # Adjust video playback speed to fit music segment duration
         speed_factor = video_duration / music_duration
+        
+        # Check for zero factor
+        if speed_factor == 0:
+            continue
 
         clip = video.subclip(start_video, end_video).fx(vfx.speedx, speed_factor)
         clip = clip.set_start(start_music)
@@ -131,34 +152,37 @@ def synchronize_video_with_music(video_path, audio_path, output_path, video_time
     final_clip.write_videofile(output_path, codec='libx264', audio_codec='aac')
 
 
-# Example usage:
-video_path = "Assembly\Download\downloaded_video.mp4"
-audio_path = "Util\Music\Frizk - ALL MY FELLAS (Lyrics).mp3"
-video_timestamps_file = "Util\data\Video_time_stamps\Time_stamps.csv"
-music_timestamps_file = "Util\data\Music_time_stamps\Frizk - ALL MY FELLAS (Lyrics).csv"
-output_path = "video_with_music.mp4"
 
-# Generate music timestamps
-make_music_time_stamps(audio_path)
+def Make_video(quota, random_audio_file):    
+    # Set variables:
+    video_path = "Assembly\Download\downloaded_video.mp4"
+    audio_path = random_audio_file
+    video_timestamps_file = "Util\data\Video_time_stamps\Time_stamps.csv"
+    audio_file_name = os.path.splitext(os.path.basename(audio_path))[0]
+    music_timestamps_file = os.path.join('Util\data\Music_time_stamps', '{}.csv'.format(audio_file_name))
+    output_path = "video_with_music.mp4"
 
-# Load beat times from CSV file
-beat_times = []
-with open(music_timestamps_file, 'r') as f:
-    csv_reader = csv.reader(f)
-    next(csv_reader)  # Skip header row
-    for row in csv_reader:
-        beat_times.append(float(row[0]))
+    # Generate music timestamps
+    make_music_time_stamps(audio_path)
 
-# Generate and select unique video timestamps based on beat intervals
-quota = 120
-video = VideoFileClip(video_path)
-video_duration = video.duration
-video_timestamps = select_unique_timestamps(video_path, quota, video_duration)
+    # Load beat times from CSV file
+    beat_times = []
+    with open(music_timestamps_file, 'r') as f:
+        csv_reader = csv.reader(f)
+        next(csv_reader)  # Skip header row
+        for row in csv_reader:
+            beat_times.append(float(row[0]))
 
-# Write selected video timestamps to a file
-with open(video_timestamps_file, 'w') as f:
-    writer = csv.writer(f)
-    writer.writerows(video_timestamps)
+    # Generate and select unique video timestamps based on beat intervals
+    video = VideoFileClip(video_path)
+    video_duration = video.duration
+    video_timestamps = select_unique_timestamps(video_path, quota, video_duration, beat_times)
 
-# Synchronize video with music and add camera shake to 10% of clips
-synchronize_video_with_music(video_path, audio_path, output_path, video_timestamps_file, music_timestamps_file, shake_percentage=10)
+    # Write selected video timestamps to a file
+    with open(video_timestamps_file, 'w') as f:
+        writer = csv.writer(f)
+        writer.writerows(video_timestamps)
+
+    # Synchronize video with music and add camera shake to 10% of clips
+    synchronize_video_with_music(video_path, audio_path, output_path, video_timestamps_file, music_timestamps_file, shake_percentage=10)
+
