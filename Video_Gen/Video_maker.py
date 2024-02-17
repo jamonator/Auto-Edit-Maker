@@ -98,6 +98,26 @@ def select_unique_timestamps(video_path, quota, video_duration, beat_times):
         return sorted(selected_timestamps)
 
 
+def add_vhs_filter(clip):
+    """Apply VHS filter effect to a video clip."""
+    def vhs_filter(t):
+        # Get the frame as a writable copy
+        frame = np.copy(clip.get_frame(t))
+        if isinstance(frame, list):
+            frame = frame[0]
+
+        # Add color distortions
+        color_noise = np.random.normal(scale=30, size=frame.shape)
+        color_noise[:, :, 0] = 0  # Set red channel to 0 to reduce red noise
+
+        # Combine the original frame with color distortions
+        frame = np.clip(frame + color_noise, 0, 255).astype(np.uint8)
+        return frame
+
+    return clip.fl(lambda gf, t: vhs_filter(t), apply_to=['mask'])
+
+
+
 def synchronize_video_with_music(video_path, audio_path, output_path, video_timestamps_file, music_timestamps_file, shake_percentage=10):
     """Synchronize video with music based on given timestamps."""
     video = VideoFileClip(video_path)
@@ -136,6 +156,10 @@ def synchronize_video_with_music(video_path, audio_path, output_path, video_time
             continue
 
         clip = video.subclip(start_video, end_video).fx(vfx.speedx, speed_factor)
+
+        # Apply VHS filter effect
+        clip = add_vhs_filter(clip)
+
         clip = clip.set_start(start_music)
 
         # Add camera shake effect to clip if within the specified percentage
