@@ -32,7 +32,7 @@ Make_music_time_stamps(random_audio_file)
 # Gather random video time stamps
 video_path = r"C:\Users\jamo0\Auto_Edit_Maker\Assembly\Download\Downloaded_video.mp4"  # Specify the absolute path to your video file
 output_file = "Util\data\Video_time_stamps\Time_stamps.csv"
-quota = 70  # Number of timestamps to generate
+quota = 120  # Number of timestamps to generate
 timestamps = select_unique_timestamps(video_path, quota)
 print("Selected Timestamps:", timestamps)
 
