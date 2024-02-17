@@ -9,7 +9,26 @@ from moviepy.audio.io.AudioFileClip import AudioFileClip
 from moviepy.editor import vfx
 import cv2
 import bisect
+from functools import lru_cache
+import math
+import moviepy.editor as mp
+from PIL import Image
 
+
+
+def memoize(func):
+    cache = {}
+
+    def memoized_func(*args):
+        if args in cache:
+            return cache[args]
+        result = func(*args)
+        cache[args] = result
+        return result
+
+    return memoized_func
+
+@memoize
 def add_camera_shake_to_clip(clip, shake_intensity=10):
     """Apply camera shake effect to a video clip."""
     frame_width, frame_height = clip.size
@@ -117,6 +136,41 @@ def add_vhs_filter(clip):
     return clip.fl(lambda gf, t: vhs_filter(t), apply_to=['mask'])
 
 
+def add_zoom_effect(clip, target_zoom_ratio=0.5):
+    total_duration = clip.duration
+
+    def effect(get_frame, t):
+        zoom_ratio = target_zoom_ratio / total_duration * t
+        img = Image.fromarray(get_frame(t))
+        base_size = img.size
+
+        new_size = [
+            math.ceil(img.size[0] * (1 + zoom_ratio)),
+            math.ceil(img.size[1] * (1 + zoom_ratio))
+        ]
+
+        # The new dimensions must be even.
+        new_size[0] = new_size[0] + (new_size[0] % 2)
+        new_size[1] = new_size[1] + (new_size[1] % 2)
+
+        img = img.resize(new_size, Image.LANCZOS)
+
+        x = math.ceil((new_size[0] - base_size[0]) / 2)
+        y = math.ceil((new_size[1] - base_size[1]) / 2)
+
+        img = img.crop([
+            x, y, new_size[0] - x, new_size[1] - y
+        ]).resize(base_size, Image.LANCZOS)
+
+        result = np.array(img)
+        img.close()
+
+        return result
+
+    return clip.fl(effect)
+
+
+
 
 def synchronize_video_with_music(video_path, audio_path, output_path, video_timestamps_file, music_timestamps_file, shake_percentage=10):
     """Synchronize video with music based on given timestamps."""
@@ -139,6 +193,7 @@ def synchronize_video_with_music(video_path, audio_path, output_path, video_time
     music_timestamps = music_timestamps[:min_len]
 
     clips = []
+    total_duration = 0  # Total duration of video clips
     for i, ((start_video, end_video), (start_music, end_music)) in enumerate(zip(video_timestamps, music_timestamps)):
         # Calculate duration of video and music segments
         video_duration = end_video - start_video
@@ -160,6 +215,11 @@ def synchronize_video_with_music(video_path, audio_path, output_path, video_time
         # Apply VHS filter effect
         clip = add_vhs_filter(clip)
 
+        # Check if adding zoom effect
+        if clip.duration >= 0.5:
+            print("[*] Clip longer than 0.5 adding zoom")
+            clip = add_zoom_effect(clip)
+
         clip = clip.set_start(start_music)
 
         # Add camera shake effect to clip if within the specified percentage
@@ -167,17 +227,22 @@ def synchronize_video_with_music(video_path, audio_path, output_path, video_time
             clip = concatenate_videoclips(add_camera_shake_to_clip(clip))
 
         clips.append(clip)
+        total_duration += clip.duration  # Update total duration
 
     # Randomize the sequence of video clips
     random.shuffle(clips)
 
     final_clip = concatenate_videoclips(clips)
     final_clip = final_clip.set_audio(audio)
-    final_clip.write_videofile(output_path, codec='libx264', audio_codec='aac')
+
+    # Write the resulting video with adjusted duration
+    final_clip.write_videofile(output_path, codec='libx264', audio_codec='aac', fps=video.fps, preset='ultrafast')
+
 
 
 
 def Make_video(quota, random_audio_file):    
+
     # Set variables:
     video_path = "Assembly\Download\downloaded_video.mp4"
     audio_path = random_audio_file
@@ -209,4 +274,3 @@ def Make_video(quota, random_audio_file):
 
     # Synchronize video with music and add camera shake to 10% of clips
     synchronize_video_with_music(video_path, audio_path, output_path, video_timestamps_file, music_timestamps_file, shake_percentage=10)
-
