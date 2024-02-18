@@ -136,11 +136,18 @@ def add_vhs_filter(clip):
     return clip.fl(lambda gf, t: vhs_filter(t), apply_to=['mask'])
 
 
-def add_zoom_effect(clip, target_zoom_ratio=0.5):
+def add_zoom_effect(clip, target_zoom_ratio=0.3):
     total_duration = clip.duration
 
     def effect(get_frame, t):
-        zoom_ratio = target_zoom_ratio / total_duration * t
+        # Calculate zoom ratio based on time t within the clip's duration
+        if t <= total_duration / 2:
+            # Zoom in
+            zoom_ratio = (target_zoom_ratio / (total_duration / 2)) * t
+        else:
+            # Zoom out
+            zoom_ratio = target_zoom_ratio - ((target_zoom_ratio / (total_duration / 2)) * (t - (total_duration / 2)))
+
         img = Image.fromarray(get_frame(t))
         base_size = img.size
 
@@ -216,8 +223,8 @@ def synchronize_video_with_music(video_path, audio_path, output_path, video_time
         clip = add_vhs_filter(clip)
 
         # Check if adding zoom effect
-        if clip.duration >= 0.5:
-            print("[*] Clip longer than 0.5 adding zoom")
+        if clip.duration >= 0.4:
+            print("[*] Clip longer than 0.4 adding zoom")
             clip = add_zoom_effect(clip)
 
         clip = clip.set_start(start_music)
@@ -234,6 +241,9 @@ def synchronize_video_with_music(video_path, audio_path, output_path, video_time
 
     final_clip = concatenate_videoclips(clips)
     final_clip = final_clip.set_audio(audio)
+
+    # Set the final clip's duration to the total duration
+    final_clip = final_clip.set_duration(total_duration)
 
     # Write the resulting video with adjusted duration
     final_clip.write_videofile(output_path, codec='libx264', audio_codec='aac', fps=video.fps, preset='ultrafast')
