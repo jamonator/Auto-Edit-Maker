@@ -2,17 +2,47 @@
 *************************** TODO *******************************
 ================================================================
 
+
+=================================
+^^^^^^^^^^^ objectives^^^^^^^^^^^
+=================================
 - Download a video✅
 
 - pick a few random time stamps to make the video without repeting ✅
 
 - pick a song and find the songs bass peaks to time the clips to ✅
 
-- join all the clips slowing or speeding them up to fit the bass gap
+- join all the clips slowing or speeding them up to fit the bass gap ✅
 
-- put a filter on the video
+- put a filter on the video ✅
 
 - post to youtube
+
+
+===============================================================
+[[[[[[[[[[[[[[[[[[[[[[[[[[[[ TO DO ]]]]]]]]]]]]]]]]]]]]]]]]]]]]
+===============================================================
+- add more songs ✅
+- fine tune the music stamp maker to be more in tune with bass then anything else ✅
+- clean up the code 
+- def functions in video maker into seperate scripts ✅
+- add console outputs 
+- make the script chop off the rest of the video that dosn't have clips ✅
+- Fix the chop off point because I still think there is some Video thats missing when it cuts
+- make somthing to handle decideing the "quota"
+- mabye swap bettween peek and bass detetion to make a video
+- add transisions between clips
+- make the zoom in only at the start of the clip so it looks like an impact kind of thing
+- add random cromatic abrasion / glitchy effect
+- add random color changing
+- add blinking / fast puleses on slower clips at random
+- come up with more small randomised edits that make it look less like a bot made it/ higher quality 
+- make differnt filters other than VHS
+- look at other examples of this kind of code and "borrow" some ideas 
+- tune the bass detection 
+- tune the peak detection 
+- automate clean up
+- automate file / folder building  
 
 
 
