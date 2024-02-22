@@ -1,10 +1,12 @@
 from Video_Effects.Camera_shake import add_camera_shake_to_clip
 from Video_Effects.VHS_filter import add_vhs_filter
 from Video_Effects.Zoom_effect import add_zoom_effect
+from Video_Effects.Chromatic_aberration import add_chromatic_aberration
 from moviepy.editor import VideoFileClip, concatenate_videoclips, vfx
 from moviepy.audio.io.AudioFileClip import AudioFileClip
 import csv
 import random
+import warnings
 
 def synchronize_video_with_music(video_path, audio_path, output_path, video_timestamps_file, music_timestamps_file, shake_percentage=10):
     """Synchronize video with music based on given timestamps."""
@@ -51,7 +53,7 @@ def synchronize_video_with_music(video_path, audio_path, output_path, video_time
 
         # Check if adding zoom effect
         if clip.duration >= 0.4:
-            print("[*] Clip longer than 0.4 adding zoom")
+            print("[*] Clip longer than 0.4, adding zoom")
             clip = add_zoom_effect(clip)
 
         clip = clip.set_start(start_music)
@@ -59,6 +61,10 @@ def synchronize_video_with_music(video_path, audio_path, output_path, video_time
         # Add camera shake effect to clip if within the specified percentage
         if random.randint(1, 100) <= shake_percentage:
             clip = concatenate_videoclips(add_camera_shake_to_clip(clip))
+
+        # Add chromatic aberration effect to clip with a 10% random chance
+        if random.randint(1, 100) <= 40:
+            clip = add_chromatic_aberration(clip)
 
         clips.append(clip)
         total_duration += clip.duration  # Update total duration
@@ -73,4 +79,7 @@ def synchronize_video_with_music(video_path, audio_path, output_path, video_time
     final_clip = final_clip.set_duration(total_duration)
 
     # Write the resulting video with adjusted duration
-    final_clip.write_videofile(output_path, codec='libx264', audio_codec='aac', fps=video.fps, preset='ultrafast')
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")  # Ignore the warning related to FFMPEG_VideoReader
+        final_clip.write_videofile(output_path, codec='libx264', audio_codec='aac', fps=video.fps, preset='ultrafast')
+
