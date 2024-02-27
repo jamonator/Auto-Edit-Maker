@@ -2,6 +2,7 @@ from Video_Effects.Camera_shake import add_camera_shake_to_clip
 from Video_Effects.VHS_filter import add_vhs_filter
 from Video_Effects.Zoom_effect import add_zoom_effect
 from Video_Effects.Chromatic_aberration import add_chromatic_aberration
+from Video_Effects.Blink_effect import add_blinking_effect_to_clip
 from moviepy.editor import VideoFileClip, concatenate_videoclips, vfx
 from moviepy.audio.io.AudioFileClip import AudioFileClip
 import csv
@@ -52,10 +53,11 @@ def synchronize_video_with_music(video_path, audio_path, output_path, video_time
         clip = add_vhs_filter(clip)
 
         # Check if adding zoom effect
-        if clip.duration >= 0.4:
-            print("[*] Clip longer than 0.4, adding zoom")
+        if clip.duration >= 0.1:
+            print("[*] Clip longer than 0.1, adding zoom")
             clip = add_zoom_effect(clip)
 
+        # Make clip and audio start at the same time
         clip = clip.set_start(start_music)
 
         # Add camera shake effect to clip if within the specified percentage
@@ -65,6 +67,9 @@ def synchronize_video_with_music(video_path, audio_path, output_path, video_time
         # Add chromatic aberration effect to clip with a 10% random chance
         if random.randint(1, 100) <= 40:
             clip = add_chromatic_aberration(clip)
+
+        if random.randint(1, 100) <= 20:
+            clip = add_blinking_effect_to_clip(clip)
 
         clips.append(clip)
         total_duration += clip.duration  # Update total duration
