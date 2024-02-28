@@ -2,18 +2,22 @@ import math
 from PIL import Image
 import numpy as np
 
-
-def add_zoom_effect(clip, target_zoom_ratio=0.2):
+def add_zoom_effect(clip, target_zoom_ratio=0.2, zoom_duration_ratio=0.1):
     total_duration = clip.duration
+    zoom_duration = total_duration * zoom_duration_ratio
+    zoom_in_duration = zoom_duration / 2  # Zoom in and out each take half of the zoom duration
 
     def effect(get_frame, t):
-        # Calculate zoom ratio based on time t within the clip's duration
-        if t <= total_duration / 2:
-            # Zoom in
-            zoom_ratio = (target_zoom_ratio / (total_duration / 2)) * t
+        if t <= zoom_in_duration:
+            # Calculate zoom ratio for zoom in phase
+            zoom_ratio = (target_zoom_ratio / zoom_in_duration) * t ** 2
+        elif t <= zoom_duration:
+            # Calculate zoom ratio for zoom out phase
+            t_out = t - zoom_in_duration
+            zoom_ratio = target_zoom_ratio - ((target_zoom_ratio / zoom_in_duration) * t_out ** 2)
         else:
-            # Zoom out
-            zoom_ratio = target_zoom_ratio - ((target_zoom_ratio / (total_duration / 2)) * (t - (total_duration / 2)))
+            # No zoom after the initial zoom effect
+            zoom_ratio = 0
 
         img = Image.fromarray(get_frame(t))
         base_size = img.size
