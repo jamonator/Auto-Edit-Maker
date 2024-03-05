@@ -22,4 +22,15 @@ def add_camera_shake_to_clip(clip, shake_intensity=10):
 
         frames_with_shake.append(shifted_frame)
 
-    return [clip.set_audio(None).set_make_frame(lambda t: frames_with_shake[min(int(t * clip.fps), len(frames_with_shake) - 1)])]
+    # Function to return the frame at a given timestamp
+    def make_frame(t):
+        index = min(int(t * clip.fps), len(frames_with_shake) - 1)
+        return frames_with_shake[index]
+
+    # Create a new clip with the frames having the camera shake effect
+    shaken_clip = clip.set_make_frame(make_frame)
+
+    # Remove the audio from the shaken clip
+    shaken_clip = shaken_clip.set_audio(None)
+
+    return shaken_clip
