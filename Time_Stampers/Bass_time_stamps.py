@@ -23,7 +23,7 @@ def detect_bass(input_audio_file):
         D = np.abs(librosa.stft(y))
 
         # Define frequency bands
-        bass_freq_range = (20, 30)  # Adjust as needed for your definition of "bass"
+        bass_freq_range = (20, 50)  # Adjust as needed for your definition of "bass"
 
         # Find the indices corresponding to the bass frequency range
         bass_indices = librosa.fft_frequencies(sr=sr).searchsorted(bass_freq_range)
