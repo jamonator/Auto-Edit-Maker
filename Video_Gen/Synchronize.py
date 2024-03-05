@@ -78,7 +78,7 @@ def synchronize_video_with_music(video_path, audio_path, output_path, video_time
         total_duration += clip.duration  # Update total duration
 
     # Randomize the sequence of video clips
-    random.shuffle(clips)
+    # random.shuffle(clips)
 
     final_clip = concatenate_videoclips(clips)
     final_clip = final_clip.set_audio(audio)
