@@ -2,6 +2,7 @@ from Video_Gen.Synchronize import synchronize_video_with_music
 from Time_Stampers.Music_time_stamps import make_music_time_stamps
 from Time_Stampers.Bass_time_stamps import detect_bass
 from Time_Stampers.Video_time_stamps import select_unique_timestamps
+from Time_Stampers.NOT_random_video_time_stamps import make_timestamps
 import os
 import csv
 from moviepy.editor import VideoFileClip
@@ -44,7 +45,10 @@ def Make_video(quota, random_audio_file):
         # Generate and select unique video timestamps based on beat intervals
         video = VideoFileClip(video_path)
         video_duration = video.duration
+
+        # Make time stamps for video
         video_timestamps = select_unique_timestamps(video_path, quota, video_duration, beat_times)
+        # video_timestamps = make_timestamps(video_path, quota, video_duration, beat_times)
 
         # Write selected video timestamps to a file
         with open(video_timestamps_file, 'w') as f:
@@ -55,4 +59,3 @@ def Make_video(quota, random_audio_file):
         synchronize_video_with_music(video_path, audio_path, output_path, video_timestamps_file, music_timestamps_file, shake_percentage=10)
     except Exception as e:
         print(f"An error occurred: {str(e)}")
-
