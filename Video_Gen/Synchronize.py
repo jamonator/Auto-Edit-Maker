@@ -56,7 +56,7 @@ def synchronize_video_with_music(video_path, audio_path, output_path, video_time
         # Check if adding zoom effect
         if clip.duration >= 0.1:
             print("[*] Clip longer than 0.1, adding zoom")
-            clip = add_zoom_effect(clip)
+            clip = add_zoom_effect(clip.subclip(t_start=0), target_zoom_ratio=0.2, zoom_duration_ratio=0.1)
             clip = increase_brightness(clip)
 
         clip = clip.set_start(start_music) 
@@ -90,4 +90,5 @@ def synchronize_video_with_music(video_path, audio_path, output_path, video_time
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")  # Ignore the warning related to FFMPEG_VideoReader
         final_clip.write_videofile(output_path, codec='libx264', audio_codec='aac', fps=video.fps, preset='ultrafast')
+
 
