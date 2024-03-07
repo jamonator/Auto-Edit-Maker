@@ -47,7 +47,7 @@ def Make_video(quota, random_audio_file):
         video_duration = video.duration
 
         # Make time stamps for video
-        video_timestamps = select_unique_timestamps(video_path, quota, video_duration, beat_times)
+        video_timestamps = select_unique_timestamps(video_duration, beat_times, quota)
         # video_timestamps = make_timestamps(video_path, quota, video_duration, beat_times)
 
         # Write selected video timestamps to a file
