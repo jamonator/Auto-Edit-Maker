@@ -8,18 +8,21 @@ def add_zoom_effect(clip, target_zoom_ratio=0.2, zoom_duration_ratio=0.1):
     zoom_in_duration = zoom_duration / 2  # Zoom in and out each take half of the zoom duration
 
     def effect(get_frame, t):
-        if t <= zoom_in_duration:
+        # Ensure t_start is within the valid range
+        t_start = max(0, min(t, total_duration - zoom_duration))
+
+        if t_start <= zoom_in_duration:
             # Calculate zoom ratio for zoom in phase
-            zoom_ratio = (target_zoom_ratio / zoom_in_duration) * t ** 2
-        elif t <= zoom_duration:
+            zoom_ratio = (target_zoom_ratio / zoom_in_duration) * t_start
+        elif t_start <= zoom_duration:
             # Calculate zoom ratio for zoom out phase
-            t_out = t - zoom_in_duration
-            zoom_ratio = target_zoom_ratio - ((target_zoom_ratio / zoom_in_duration) * t_out ** 2)
+            t_out = t_start - zoom_in_duration
+            zoom_ratio = target_zoom_ratio - ((target_zoom_ratio / zoom_in_duration) * t_out)
         else:
             # No zoom after the initial zoom effect
             zoom_ratio = 0
 
-        img = Image.fromarray(get_frame(t))
+        img = Image.fromarray(get_frame(t_start))
         base_size = img.size
 
         new_size = [
