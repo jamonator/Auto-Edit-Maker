@@ -4,7 +4,7 @@
 
 
 =================================
-^^^^^^^^^^^ objectives^^^^^^^^^^^
++++++++ Simple Objectivs ++++++++
 =================================
 - Download a video✅
 
@@ -19,38 +19,102 @@
 - post to youtube
 
 
-===============================================================
-[[[[[[[[[[[[[[[[[[[[[[[[[[[[ TO DO ]]]]]]]]]]]]]]]]]]]]]]]]]]]]
-===============================================================
-- add more songs ✅
-- fine tune the music stamp maker to be more in tune with bass then anything else ✅
-- clean up the code 
-- def functions in video maker into seperate scripts ✅
-- add console outputs 
-- make the script chop off the rest of the video that dosn't have clips ✅
-- Fix the chop off point because I still think there is some Video thats missing when it cuts
-- make somthing to handle decideing the "quota"
-- mabye swap bettween peek and bass detetion to make a video
-- add transisions between clips
-- make the zoom in only at the start of the clip so it looks like an impact kind of thing
-- add random cromatic abrasion / glitchy effect ✅
-- add random color changing
-- add blinking / fast puleses on slower clips at random
-- come up with more small randomised edits that make it look less like a bot made it/ higher quality 
-- make differnt filters other than VHS
-- look at other examples of this kind of code and "borrow" some ideas 
-- tune the bass detection 
-- tune the peak detection 
-- automate clean up
-- automate file / folder building  
+================================================================
+|!!!!!!!!!!!!!!!!!!!!!!!!! TO DO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!|
+================================================================
 
+
+
+===================================
+************** Main 🖥️*************
+===================================
+- Asume that everything here will need a config option aswell
+- make it ask for wether it runs on url or a file location
+- ask for what filter the user wants 
+- make it so you can choose the song or make it random 
+
+
+
+===================================
+*********** Video Gen 🎬***********
+===================================
+- make somthing to handle decideing the "quota" ✅
+
+
+
+===================================
+********* Time Stampers 🕑*********
+===================================
+- fine tune the music stamp maker to be more in tune with bass then anything else ✅
+- tune the bass detection ✅
+- tune the peak detection ✅ 
+- make a beat drop detector for the starter clip
+
+
+
+
+
+===================================
+********* Video Effects 🎥*********
+===================================
+- make it so that slow clips start fast and slow down
+- make it so that the video audio comes back at random for a clip then the music comes back
+- add transisions between clips
+- make the zoom in only at the start of the clip so it looks like an impact kind of thing ✅
+- make the color get lighter on the zoom in to add more impact ✅
+- add random cromatic abrasion✅
+- add a glitchy effect 
+- add random color changing
+- add blinking / fast puleses on slower clips at random ✅
+- make a vibrant filter ✅
+- make a enhancer filter ✅
+- make a sigma filter ✅
+- make a sunrise filter ✅
+- make a filter that looks realy nice 
+- put all the filter scripts in there own folder
+- make more effects 
+
+
+
+
+===================================
+***********Fix List 🔨*************
+===================================
+- fix the music time stamper so it stops making random long time stamps
+- Fix the chop off point because I still think there is some Video thats missing when it cuts ✅
+- make the script chop off the rest of the video that dosn't have clips ✅
+
+
+
+
+===================================
+***********Clean Up 🧹*************
+===================================
+- clean up the code 
+- automate clean up
+- clean up folder paths and locations
+- add console outputs 
+- add more defult songs ✅
+- def functions in video maker into seperate scripts ✅
+- automate file / folder building  
+- make the readme
+- make install guide 
+- make example videos 
+
+
+===================================
+***********Config File ⚙️*********
+===================================
+- Come up with a way for the config handler to hand out all of the prefernces 
+- Make a config file for user prefrenses as well as more options from runing main
+- Make a config file handler 
+- Make it so that the Config file decides only important things not EVERRYTHING 
+- make # Notes for what the defult is and what it dose
 
 
 
 ================================================================
 !!!!!!!!!!!!!!!!!!!!!!! Possible Features !!!!!!!!!!!!!!!!!!!!!!
 ================================================================
-
-- manual selection of a starter clip for the beat drop or find a 
-  way to automate the starter clip
-
+- make it so that the music time stamps can be used to add zoom ins and other effects
+- manual selection of a starter clip for the beat drop by giving time stamps of starter clip ✅
