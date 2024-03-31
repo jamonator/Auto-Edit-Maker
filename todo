@@ -29,16 +29,21 @@
 ************** Main 🖥️*************
 ===================================
 - Asume that everything here will need a config option aswell
-- make it ask for wether it runs on url or a file location
+- make it ask for wether it runs on url or a file location ✅
+- go throught the project and replace actual file names with file sense for things like downloaded videos ✅
 - ask for what filter the user wants 
 - make it so you can choose the song or make it random 
-
+- add defult values to any option question ✅
+- clean up main and make it more streamlined for user input and defult answers, and config file
+- make it so you can give time stamps to cut out intros or outros from the video 
+- add a time counter to see how long the script took to run
 
 
 ===================================
 *********** Video Gen 🎬***********
 ===================================
 - make somthing to handle decideing the "quota" ✅
+- make it so the final video music has a fade out and mabye a fade in
 
 
 
@@ -49,7 +54,9 @@
 - tune the bass detection ✅
 - tune the peak detection ✅ 
 - make a beat drop detector for the starter clip
-
+- make an option for the video time stamper that makes it not random ✅
+- make one that will pick time stamps that are not random in intervals so its like 3 
+  sequential clips then another 3 sequential clips from another time   stamp 
 
 
 
@@ -57,22 +64,21 @@
 ===================================
 ********* Video Effects 🎥*********
 ===================================
-- make it so that slow clips start fast and slow down
-- make it so that the video audio comes back at random for a clip then the music comes back
-- add transisions between clips
+- make it so that slow clips start fast and slow down ✅
+- make an option so that the video audio comes back at random for a clip then the music comes back
+- add transisions between clips ✅
 - make the zoom in only at the start of the clip so it looks like an impact kind of thing ✅
 - make the color get lighter on the zoom in to add more impact ✅
 - add random cromatic abrasion✅
-- add a glitchy effect 
-- add random color changing
+- add random color changing effect
 - add blinking / fast puleses on slower clips at random ✅
 - make a vibrant filter ✅
 - make a enhancer filter ✅
 - make a sigma filter ✅
 - make a sunrise filter ✅
-- make a filter that looks realy nice 
-- put all the filter scripts in there own folder
+- put all the filter scripts in there own folder ✅
 - make more effects 
+- mabey make a reverse effect that reverses a clip
 
 
 
@@ -80,10 +86,12 @@
 ===================================
 ***********Fix List 🔨*************
 ===================================
-- fix the music time stamper so it stops making random long time stamps
+- fix the music time stamper so it stops making random long time stamps ✅
 - Fix the chop off point because I still think there is some Video thats missing when it cuts ✅
 - make the script chop off the rest of the video that dosn't have clips ✅
-
+- make the speed manipulatior better so it actualy smothly speeds up and slows down ✅
+- fix the t_start error in zoom_effect
+- find the right amount of brightness for all filters
 
 
 
