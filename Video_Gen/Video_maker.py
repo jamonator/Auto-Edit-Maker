@@ -1,8 +1,11 @@
 from Video_Gen.Synchronize import synchronize_video_with_music
 from Time_Stampers.Music_time_stamps import make_music_time_stamps
 from Time_Stampers.Bass_time_stamps import detect_bass
-from Time_Stampers.Video_time_stamps import select_unique_timestamps
-from Time_Stampers.NOT_random_video_time_stamps import make_timestamps
+
+# One makes sequential the other is random
+from Time_Stampers.Random_video_time_stamps import select_random_timestamps
+from Time_Stampers.Sequential_video_time_stamps import select_sequential_timestamps
+
 import os
 import csv
 from moviepy.editor import VideoFileClip, AudioFileClip, concatenate_videoclips
@@ -20,15 +23,14 @@ def memoize(func):
     return memoized_func
 
 @memoize
-def Make_video(desired_video_length,random_audio_file):    
+def Make_video(desired_video_length,random_audio_file, set_time_stamp_type, output_path):    
     try:
         # Set variables
-        video_path = "Assembly/Download/downloaded_video.mp4"
+        video_path = next((os.path.join("Assembly/Download", file) for file in os.listdir("Assembly/Download") if file.endswith((".mp4", ".avi", ".mov"))), None)
         audio_path = random_audio_file
         video_timestamps_file = "Util/data/Video_time_stamps/Time_stamps.csv"
         audio_file_name = os.path.splitext(os.path.basename(audio_path))[0]
         music_timestamps_file = os.path.join('Util/data/Music_time_stamps', '{}.csv'.format(audio_file_name))
-        output_path = "video_with_music.mp4"
 
         # Generate music timestamps
         make_music_time_stamps(audio_path)
@@ -62,7 +64,10 @@ def Make_video(desired_video_length,random_audio_file):
             video = video.subclip(0, desired_video_length)
 
         # Make time stamps for video
-        video_timestamps = select_unique_timestamps(video_duration, beat_times, song_duration)
+        if set_time_stamp_type == "1":
+            video_timestamps = select_random_timestamps(video_duration, beat_times, song_duration)
+        if set_time_stamp_type == "2":
+            video_timestamps = select_sequential_timestamps(video_duration, beat_times, song_duration)
 
         # Write selected video timestamps to a file
         with open(video_timestamps_file, 'w') as f:
