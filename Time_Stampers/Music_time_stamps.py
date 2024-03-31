@@ -38,6 +38,10 @@ def make_music_time_stamps(input):
             writer = csv.writer(f)
             writer.writerow(['Start Time', 'End Time'])
             for start_time, end_time in zip(beat_times[:-1], beat_times[1:]):
+                # Ensure the duration of the timestamp is not too long
+                max_duration = 6.0  # Adjust this value as needed
+                if end_time - start_time > max_duration:
+                    end_time = start_time + max_duration
                 writer.writerow([start_time, end_time])
 
         # Complete message
