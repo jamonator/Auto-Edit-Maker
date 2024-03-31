@@ -1,13 +1,13 @@
 from Video_Effects.Camera_shake import add_camera_shake_to_clip
-from Video_Effects.VHS_filter import add_vhs_filter
+from Video_Filters.VHS_filter import add_vhs_filter
 from Video_Effects.Zoom_effect import add_zoom_effect
-from Video_Effects.Chromatic_aberration import add_chromatic_aberration
+from Video_Effects.Glitch_effect import add_chromatic_aberration
 from Video_Effects.light_effect import increase_brightness
 from Video_Effects.Blink_effect import add_blinking_effect
 from Video_Effects.Speed_effect import Add_speed_effect
-from Video_Effects.Enhanced_filter import add_enhanced_filter
-from Video_Effects.Sigma_filter import Add_sigma_filter
-from Video_Effects.Sunrise_filter import add_sunrise_filter
+from Video_Filters.Enhanced_filter import add_enhanced_filter
+from Video_Filters.Sigma_filter import Add_sigma_filter
+from Video_Filters.Sunrise_filter import add_sunrise_filter
 from moviepy.editor import VideoFileClip, concatenate_videoclips, vfx
 from moviepy.audio.io.AudioFileClip import AudioFileClip
 import csv
