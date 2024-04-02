@@ -23,7 +23,7 @@ def memoize(func):
     return memoized_func
 
 @memoize
-def Make_video(desired_video_length,random_audio_file, set_time_stamp_type, output_path):    
+def Make_video(desired_video_length,random_audio_file, set_time_stamp_type, output_path, effect_options, filter_option): 
     try:
         # Set variables
         video_path = next((os.path.join("Assembly/Download", file) for file in os.listdir("Assembly/Download") if file.endswith((".mp4", ".avi", ".mov"))), None)
@@ -74,8 +74,8 @@ def Make_video(desired_video_length,random_audio_file, set_time_stamp_type, outp
             writer = csv.writer(f)
             writer.writerows(video_timestamps)
 
-        # Synchronize video with music and add camera shake to 10% of clips
-        synchronize_video_with_music(video_path, audio_path, output_path, video_timestamps_file, music_timestamps_file, desired_video_length, shake_percentage=10)
+        # Synchronize video with music 
+        synchronize_video_with_music(video_path, audio_path, output_path, video_timestamps_file, music_timestamps_file, desired_video_length, effect_options, filter_option, shake_percentage=10)
 
     except Exception as e:
         print(f"An error occurred: {str(e)}")
