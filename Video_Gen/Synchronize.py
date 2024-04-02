@@ -17,7 +17,7 @@ import warnings
 from moviepy.editor import VideoFileClip, concatenate_videoclips, vfx, AudioFileClip
 import csv
 
-def synchronize_video_with_music(video_path, audio_path, output_path, video_timestamps_file, music_timestamps_file, desired_video_length, shake_percentage=10):
+def synchronize_video_with_music(video_path, audio_path, output_path, video_timestamps_file, music_timestamps_file, desired_video_length, effect_options, filter_option, shake_percentage=10):
     """Synchronize video with music based on given timestamps."""
     video = VideoFileClip(video_path)
     audio = AudioFileClip(audio_path)
@@ -59,26 +59,36 @@ def synchronize_video_with_music(video_path, audio_path, output_path, video_time
 
         clip = video.subclip(start_video, end_video).fx(vfx.speedx, speed_factor)
 
-        # Apply effects to the clip
-        # clip = add_vhs_filter(clip)
-        clip = Add_sigma_filter(clip)
-        # clip = add_sunrise_filter(clip)
-        # clip = add_enhanced_filter(clip)
-        clip = add_zoom_effect(clip)
-        clip = increase_brightness(clip)
-        clip = Add_speed_effect(clip)
+
+        # Determine which filters to add based on selected options
+        if filter_option == "1":
+            clip = add_enhanced_filter(clip)
+        if filter_option == "2":
+            clip = Add_sigma_filter(clip)
+        if filter_option == "2":
+            clip = add_sunrise_filter(clip)
+        if filter_option == "4":
+            clip = add_vhs_filter(clip)
+
+
+        # Determine which effects to add based on selected options
+        if is_effect_selected(6, effect_options):
+            clip = add_zoom_effect(clip)
+        if is_effect_selected(4, effect_options):
+            clip = increase_brightness(clip)
+        if is_effect_selected(5, effect_options):
+            clip = Add_speed_effect(clip)
 
         # Add camera shake effect to clip if within the specified percentage
-        if random.randint(1, 100) <= shake_percentage:
+        if is_effect_selected(2, effect_options) and random.randint(1, 100) <= shake_percentage:
             clip = concatenate_videoclips([add_camera_shake_to_clip(clip)])
 
-        # Add chromatic aberration effect to clip with a 20% random chance
-        if random.randint(1, 100) <= 30:
+        # Add chromatic aberration effect to clip with a 30% chance
+        if is_effect_selected(3, effect_options) and random.randint(1, 100) <= 30:
             clip = add_chromatic_aberration(clip)
 
-
-        # Add Blink effect to clip with a 5% random chance
-        if random.randint(1, 100) <= 5:
+        # Add Blink effect to clip with a 5% chance
+        if is_effect_selected(1, effect_options) and random.randint(1, 100) <= 5:
             clip = add_blinking_effect(clip)
 
         # Calculate clip duration based on remaining duration
@@ -102,3 +112,7 @@ def synchronize_video_with_music(video_path, audio_path, output_path, video_time
 
     # Write the resulting video with adjusted duration
     final_clip.write_videofile(output_path, codec='libx264', audio_codec='aac', fps=video.fps, preset='ultrafast')
+
+
+def is_effect_selected(effect_number, selected_options):
+    return str(effect_number) in selected_options.split(',')
