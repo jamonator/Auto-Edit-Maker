@@ -1,7 +1,7 @@
 import random
 import cv2
 import numpy as np
-
+from moviepy.editor import VideoClip
 
 def add_camera_shake_to_clip(clip, shake_intensity=10):
     """Apply camera shake effect to a video clip."""
@@ -18,7 +18,10 @@ def add_camera_shake_to_clip(clip, shake_intensity=10):
         dx = random.randint(-shake_intensity, shake_intensity)
         dy = random.randint(-shake_intensity, shake_intensity)
         translation_matrix = np.float32([[1, 0, dx], [0, 1, dy]])
-        shifted_frame = cv2.warpAffine(frame, translation_matrix, (frame_width, frame_height))
+        
+        # Apply translation to the frame
+        shifted_frame = cv2.warpAffine(frame, translation_matrix, (frame_width, frame_height),
+                                        flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT, borderValue=(0, 0, 0))
 
         frames_with_shake.append(shifted_frame)
 
@@ -28,7 +31,7 @@ def add_camera_shake_to_clip(clip, shake_intensity=10):
         return frames_with_shake[index]
 
     # Create a new clip with the frames having the camera shake effect
-    shaken_clip = clip.set_make_frame(make_frame)
+    shaken_clip = VideoClip(make_frame=make_frame, duration=clip.duration)
 
     # Remove the audio from the shaken clip
     shaken_clip = shaken_clip.set_audio(None)
