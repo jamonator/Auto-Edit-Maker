@@ -10,10 +10,9 @@ def add_blinking_effect(clip, d_on=0.1, d_off=0.1):
     while t < clip.duration:
         subclip_end = min(t + d_on, clip.duration)
         blinking_clips.append(clip.subclip(t, subclip_end))
-        blinking_clips.append(black_clip(d_off, clip.fps))  # Corrected FPS parameter
+        blinking_clips.append(black_clip(d_off, clip.fps)) # Corrected FPS parameter
         t += d_on + d_off
 
     blinking_clip = concatenate_videoclips(blinking_clips)
     blinking_clip = blinking_clip.set_audio(clip.audio)
-
     return blinking_clip
