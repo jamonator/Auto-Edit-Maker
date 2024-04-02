@@ -16,7 +16,6 @@
 
 - put a filter on the video ✅
 
-- post to youtube
 
 
 ================================================================
@@ -31,8 +30,9 @@
 - Asume that everything here will need a config option aswell
 - make it ask for wether it runs on url or a file location ✅
 - go throught the project and replace actual file names with file sense for things like downloaded videos ✅
-- ask for what filter the user wants 
-- make it so you can choose the song or make it random 
+- ask for what filter the user wants ✅
+- ask for what effects the user wants ✅
+- make it so you can choose the song or make it random
 - add defult values to any option question ✅
 - clean up main and make it more streamlined for user input and defult answers, and config file
 - make it so you can give time stamps to cut out intros or outros from the video 
