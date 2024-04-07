@@ -22,6 +22,10 @@ def make_music_time_stamps(input):
     try:
         # Load audio file and detect beats
         x, sr = librosa.load(input_audio_file)
+        
+        # Ensure the duration of the audio clip is non-negative
+        duration = max(0, librosa.get_duration(y=x, sr=sr))
+        
         tempo, beat_times = librosa.beat.beat_track(x, sr=sr, start_bpm=80, units='time')
 
         # Introduce a random slow section
@@ -30,8 +34,10 @@ def make_music_time_stamps(input):
         slow_factor = random.uniform(1.5, 3.0)  # Random slow factor
 
         # Adjust timestamps in the slow section
-        for i in range(random_start_index, random_end_index + 1):
+        for i in range(random_start_index, min(random_end_index + 1, len(beat_times))):
             beat_times[i] *= slow_factor
+            # Ensure the timestamp is within the clip's duration
+            beat_times[i] = min(beat_times[i], duration)
 
         # Write beat times to CSV file
         with open(csv_file, 'w', newline='') as f:
