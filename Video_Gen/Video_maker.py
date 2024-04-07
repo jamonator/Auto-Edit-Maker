@@ -1,11 +1,10 @@
 from Video_Gen.Synchronize import synchronize_video_with_music
 from Time_Stampers.Music_time_stamps import make_music_time_stamps
 from Time_Stampers.Bass_time_stamps import detect_bass
-
-# One makes sequential the other is random
 from Time_Stampers.Random_video_time_stamps import select_random_timestamps
 from Time_Stampers.Sequential_video_time_stamps import select_sequential_timestamps
-
+from Time_Stampers.Random_sequential_video_time_stamps import select_random_sequential_timestamps
+import time
 import os
 import csv
 from moviepy.editor import VideoFileClip, AudioFileClip, concatenate_videoclips
@@ -68,14 +67,33 @@ def Make_video(desired_video_length,random_audio_file, set_time_stamp_type, outp
             video_timestamps = select_random_timestamps(video_duration, beat_times, song_duration)
         if set_time_stamp_type == "2":
             video_timestamps = select_sequential_timestamps(video_duration, beat_times, song_duration)
+        if set_time_stamp_type == "3":
+            video_timestamps = select_random_sequential_timestamps(video_duration, beat_times, song_duration)
 
         # Write selected video timestamps to a file
         with open(video_timestamps_file, 'w') as f:
             writer = csv.writer(f)
             writer.writerows(video_timestamps)
+        
+        
+        while True:
+                try:
+                    synchronize_video_with_music(video_path, audio_path, output_path, video_timestamps_file, music_timestamps_file, desired_video_length, effect_options, filter_option, shake_percentage=10)
+                except OSError as e:
+                    # Handle the specific OSError
+                    if e.winerror == 6:  # WinError 6: The handle is invalid
+                        print("An error occurred. Restarting the process...")
+                        # Wait for a short duration before restarting
+                        time.sleep(2)
+                        continue
+                    else:
+                        # If it's another OSError, print the error and break the loop
+                        print(f"An unexpected error occurred: {e}")
+                        break
+                else:
+                    # If no exception occurs, break the loop
+                    break
 
-        # Synchronize video with music 
-        synchronize_video_with_music(video_path, audio_path, output_path, video_timestamps_file, music_timestamps_file, desired_video_length, effect_options, filter_option, shake_percentage=10)
 
     except Exception as e:
         print(f"An error occurred: {str(e)}")
