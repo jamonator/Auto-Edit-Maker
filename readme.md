@@ -1,4 +1,4 @@
-(___)
+___
 
 # Auto Edit Maker
 Auto Edit Maker is a Python project that creates custom edits of an input video, synchronizing it with music and applying various effects and filters.
