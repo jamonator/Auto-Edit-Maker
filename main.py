@@ -1,28 +1,31 @@
 from Util.scripts.console import *
 from Util.scripts.Video_downloader import * 
-from Video_Gen.Video_maker import *
+from Video_Gen.Make_time_stamps import *
 from Video_Gen.Starter_clip import *
 from Video_Gen.Remove_time_stamp import *
-from moviepy.editor import AudioFileClip
 from Util.scripts.Time_converter import parse_timestamp
+from moviepy.editor import AudioFileClip
 import os
 import random
 
 # Start timing
 start_time = time.time()
 
-print_step("Starting Auto Edit Maker 🎥")
+print_step("Starting Auto Edit Maker ✨🎬✨")
+
+
 
 
 ########################## Set values ##########################
 
 # Set up file/folder paths 
 print_substep("Setting File and folder paths")
-download_output = "Assembly/Download"
+download_output = "Downloaded"
 Music_folder = "Util/Music"
 output_path = "Output.mp4"
-video_path = next((os.path.join("Assembly/Download", file) for file in os.listdir("Assembly/Download") if file.endswith((".mp4", ".avi", ".mov", ".MP4", ".MOV"))), None)
+video_path = next((os.path.join(download_output, file) for file in os.listdir(download_output) if file.endswith((".mp4", ".avi", ".mov", ".MP4", ".MOV"))), None)
 
+print_substep("Setting default values ")
 # Skip questions and use defaults 
 use_default_values = True    # True will skip asking / False will ask
 
@@ -37,11 +40,11 @@ cut_from_video_default = "n"
 
 # Choose wether you want to set a default duration or not 
 set_manual_duration_default = "Y"   # Yes or no 
-duration_default = "0:50"   # The duration that will be used if Y is selected the format 0:00 
+duration_default = "0:30"   # The duration that will be used if Y is selected the format 0:00 
 
 # Select what song selection type you want
-song_choice_default = "2"   # 1 is select a song youself / 2 is randomly decide 
-song_file_default = "Bando.mp3" # The song that will be used if 1 is selected 
+song_choice_default = "1"   # 1 is select a song youself / 2 is randomly decide 
+song_file_default = "lilbubblegum - af1 [Lyrics].mp3" # The song that will be used if 1 is selected 
 
 # Choose wether the time stamps  are selected randomly or  Seqentialy
 time_stamp_type_default = "3"   # 1 is random / 2 is sequential / 3 is random sequential time stamps
@@ -57,7 +60,10 @@ filter_option_default = "2" # enter what option number you want
 
 # Skip asking and just use default values 
 if use_default_values == True:
+    print_start("Using Default values:")
+
     # Set values 
+    print_substep("Setting values ")
     set_time_stamp_type = time_stamp_type_default
     effect_options = effect_options_default
     filter_option = filter_option_default
@@ -82,16 +88,18 @@ if use_default_values == True:
         random_audio_file = os.path.join(Music_folder, audio_file_choice)
         audio_file = AudioFileClip(random_audio_file)
         audio_duration = audio_file.duration
+        print_substep(f"Selected song: {audio_file_choice}")
 
     # Set song to a random song
     if song_choice == "2":
         files = os.listdir(Music_folder)
         random_audio_file = os.path.join(Music_folder, random.choice(files))
-        print_substep(f"Random audio file selected: {random_audio_file}")
         audio_file = AudioFileClip(random_audio_file)
         audio_duration = audio_file.duration
+        print_substep(f"Random audio file selected: {random_audio_file}")
 
     if start_clip_option.lower() == "y":
+        print_substep("Asking for starter clip timestamps")
         start_timestamp = handle_input("Enter start timestamp (e.g., 9:23): ")
         end_timestamp = handle_input("Enter end timestamp (e.g., 9:30): ")
 
@@ -100,6 +108,7 @@ if use_default_values == True:
     
 # Ask for values 
 if use_default_values == False:
+    print_start("Asking for values:")
     # Ask for video link or file 
     print_table(["1: Download a youtube video ", "2: Use video file"])
     link_or_file = handle_input(f"Do you want to download a video link or run from file (default is {link_or_file_default}) 1/2: ", default=link_or_file_default)
@@ -147,7 +156,7 @@ if use_default_values == False:
         start_timestamp = handle_input("Enter start timestamp (e.g., 9:23): ")
         end_timestamp = handle_input("Enter end timestamp (e.g., 9:30): ")
     else:
-        print("No starter clip will be added.")
+        print_substep("No starter clip will be added.")
         start_timestamp = None
         end_timestamp = None
 
@@ -156,7 +165,7 @@ if use_default_values == False:
     if duration.lower() == "y":
         set_manual_duration = handle_input(f"Enter video lenght (Default is {duration_default}): ", default=duration_default)
         desired_video_length = parse_timestamp(set_manual_duration)
-        print(f"desired video length set to: {desired_video_length} seconds")
+        print(f"Desired video length set to: {desired_video_length} seconds")
     else:
         # Set up quota
         video_file = VideoFileClip(video_path)
@@ -187,7 +196,7 @@ if use_default_values == False:
     
 
 # Make Video 
-Make_video(desired_video_length, random_audio_file, set_time_stamp_type, output_path, effect_options, filter_option)
+Make_video(desired_video_length, random_audio_file, set_time_stamp_type, output_path, effect_options, filter_option, video_path)
 
 # Starter clip
 if start_clip_option.lower() == "y":
@@ -201,10 +210,6 @@ execution_time = end_time - start_time
 if execution_time > 60:
     minutes = int(execution_time // 60)
     seconds = int(execution_time % 60)
-    print(f"Script executed in {minutes} minutes and {seconds} seconds.")
+    print_start(f"Script executed in {minutes} minutes and {seconds} seconds.")
 else:
-    print(f"Script executed in {execution_time} seconds.")
-
-
-
-# https://youtu.be/4Nm9hlac4js
+    print_start(f"Script executed in {execution_time} seconds.")
