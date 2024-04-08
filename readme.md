@@ -13,9 +13,9 @@ Auto Edit Maker is a Python project that creates custom edits of an input video,
 - Offers default settings for easy use
 - Offers a choice between random and sequential clip selection
 - Supports interactive user input or uses default values
+- This project also has a revolutionary new technology called "This sh*t Probably will not work" That makes this project damn near unusable!
 
 ## Main Dependencies:
-- librosa
 - moviepy
 
 ## Installation:
@@ -24,5 +24,18 @@ Auto Edit Maker is a Python project that creates custom edits of an input video,
 
 ## Usage:
 - If you mannage to figure it out run main
-
+- God help you if you get any errors
+___
 ## Examples 
+###[Input Video](https://youtu.be/uK3-1GdfkIU)
+### [Output Video](https://youtu.be/EIf2DPZU448)
+
+###[Input Video](https://youtu.be/SO2Li9BMQp8)
+### [Output Video](https://youtu.be/-Z-lwr_YAlo)
+___
+
+## Note from the creator:
+- If you found this to be a cool idea please make it better than me and let me know :)
+- Any of this code can be used don't care
+- If you somehow got this code working please let me know that would be cool :)
+- 
