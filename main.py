@@ -30,7 +30,7 @@ print_substep("Setting default values ")
 use_default_values = True    # True will skip asking / False will ask
 
 # Choose if the script runs using the file curently in Assembly/Download or downloads a video from a link
-link_or_file_default = "2"   # 1 is run from file / 2 is download video
+link_or_file_default = "1"   # 1 is run from file / 2 is download video
 
 # Choose wether you want to add a starter clip or not
 starter_clip_default = "n"   # Yes or no
@@ -43,8 +43,8 @@ set_manual_duration_default = "Y"   # Yes or no
 duration_default = "0:30"   # The duration that will be used if Y is selected the format 0:00 
 
 # Select what song selection type you want
-song_choice_default = "1"   # 1 is select a song youself / 2 is randomly decide 
-song_file_default = "lilbubblegum - af1 [Lyrics].mp3" # The song that will be used if 1 is selected 
+song_choice_default = "2"   # 1 is select a song youself / 2 is randomly decide 
+song_file_default = "lilbubblegum - af1 [Lyrics].mp3" # The song that will be used if 1 is selected e.g music.mp3
 
 # Choose wether the time stamps  are selected randomly or  Seqentialy
 time_stamp_type_default = "3"   # 1 is random / 2 is sequential / 3 is random sequential time stamps
