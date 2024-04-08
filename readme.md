@@ -27,15 +27,19 @@ Auto Edit Maker is a Python project that creates custom edits of an input video,
 - God help you if you get any errors
 ___
 ## Examples 
+***
 ### Input Video
 https://youtu.be/uK3-1GdfkIU
+
 ### Output Video
 https://youtu.be/EIf2DPZU448
-
+***
 ###Input Video 
 https://youtu.be/SO2Li9BMQp8
+
 ### Output Video
 https://youtu.be/-Z-lwr_YAlo
+***
 ___
 
 ## Note from the creator:
