@@ -1,0 +1,9 @@
+numpy
+librosa
+moviepy
+opencv-python
+functools
+pillow
+pandas
+scipy
+pytube
