@@ -39,11 +39,9 @@ https://youtu.be/SO2Li9BMQp8
 
 ### Output Video
 https://youtu.be/-Z-lwr_YAlo
-***
 ___
 
 ## Note from the creator:
 - If you found this to be a cool idea please make it better than me and let me know :)
 - Any of this code can be used don't care
 - If you somehow got this code working please let me know that would be cool :)
-- 
