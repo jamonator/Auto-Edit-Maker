@@ -1,4 +1,3 @@
-from Util.scripts.console import *
 from Video_Gen.Build_video import synchronize_video_with_music
 from Time_Stampers.Music_time_stamps import make_music_time_stamps
 from Time_Stampers.Random_video_time_stamps import select_random_timestamps
@@ -22,11 +21,10 @@ def memoize(func):
     return memoized_func
 
 @memoize
-def Make_video(desired_video_length,random_audio_file, set_time_stamp_type, output_path, effect_options, filter_option, video_path): 
-    print_step("Make Time Stamps 🕒🖃")
+def Make_video(desired_video_length, random_audio_file, set_time_stamp_type, output_path, effect_options, filter_option, video_path): 
     try:
         # Set variables
-        print_substep("Setting values")
+        video_path = next((os.path.join("Downloaded", file) for file in os.listdir("Downloaded") if file.endswith((".mp4", ".avi", ".mov"))), None)
         audio_path = random_audio_file
         video_timestamps_file = "Util/data/Video_time_stamps/Time_stamps.csv"
         audio_file_name = os.path.splitext(os.path.basename(audio_path))[0]
@@ -36,7 +34,6 @@ def Make_video(desired_video_length,random_audio_file, set_time_stamp_type, outp
         make_music_time_stamps(audio_path)
 
         # Load beat times from CSV file
-        print_substep("Loading beat times from CSV file")
         beat_times = []
         with open(music_timestamps_file, 'r') as f:
             csv_reader = csv.reader(f)
@@ -44,19 +41,16 @@ def Make_video(desired_video_length,random_audio_file, set_time_stamp_type, outp
             for row in csv_reader:
                 beat_times.append(float(row[0]))
 
-        # Load video and song
-        print_substep("Loading video and song")
+        # Load video
         video = VideoFileClip(video_path)
         song = AudioFileClip(random_audio_file)
 
         # Set Durations 
-        print_substep("Setting video and song duration")
         video_duration = video.duration
         song_duration = song.duration
 
 
         # Adjust video duration to match desired length
-        print_substep("Adjusting video duration to match desired length")
         if video.duration > desired_video_length:
             # Trim the video to the desired length
             video = video.subclip(0, desired_video_length)
@@ -76,11 +70,11 @@ def Make_video(desired_video_length,random_audio_file, set_time_stamp_type, outp
             video_timestamps = select_random_sequential_timestamps(video_duration, beat_times, song_duration)
 
         # Write selected video timestamps to a file
-        print_substep("Writting selected video timestamps to a file")
         with open(video_timestamps_file, 'w') as f:
             writer = csv.writer(f)
             writer.writerows(video_timestamps)
-        
+
+
         while True:
                 try:
                     synchronize_video_with_music(video_path, audio_path, output_path, video_timestamps_file, music_timestamps_file, desired_video_length, effect_options, filter_option, shake_percentage=10)
